@@ -2,7 +2,7 @@
 
 # Validate input arguments
 if [ $# -lt 5 ]; then
-    echo "Usage: $0 <pat> <api_url> <download_path> <tenant_locator> <table_name> [delta_file_type]"
+    echo "Usage: $0 <pat> <api_url> <download_path> <tenant_locator> <table_name> [file_type]"
     exit 1
 fi
 
@@ -12,11 +12,11 @@ api_url="$2"
 download_path="$3"
 tenant_locator="$4"
 table_name="$5"
-delta_file_type="${6:-csv}"
+file_type="${6:-csv}"
 is_done="false"
 
-if [ "$delta_file_type" != "sql" ] && [ "$delta_file_type" != "csv" ]; then
-    echo "Invalid delta_file_type '$delta_file_type'. Must be 'sql' or 'csv'."
+if [ "$file_type" != "sql" ] && [ "$file_type" != "csv" ]; then
+    echo "Invalid file_type '$file_type'. Must be 'sql' or 'csv'."
     exit 1
 fi
 
@@ -54,14 +54,13 @@ while [ "$is_done" != "true" ]; do
         \"transformationTable\": \"$table_name\",
         \"tenantLocator\": \"$tenant_locator\",
         \"lastFile\" : \"$last_downloaded_file\",
-        \"deltaFileType\": \"$delta_file_type\"
+        \"deltaFileType\": \"$file_type\"
     }")
 
     # Check if .deltaFiles exists and contains at least one item
     if ! echo "$response" | jq -e '.deltaFiles | length > 0' > /dev/null 2>&1; then
         echo "No files to download in '.deltaFiles'."
         is_done="true"
-        exit 1
     else
         echo "Files found in '.deltaFiles'. Proceeding..."
     fi
