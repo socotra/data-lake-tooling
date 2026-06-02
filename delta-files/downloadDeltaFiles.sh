@@ -2,7 +2,7 @@
 
 # Validate input arguments
 if [ $# -lt 5 ]; then
-    echo "Usage: $0 <pat> <api_url> <download_path> <tenant_locator> <table_name>"
+    echo "Usage: $0 <pat> <api_url> <download_path> <tenant_locator> <table_name> [delta_file_type]"
     exit 1
 fi
 
@@ -12,7 +12,13 @@ api_url="$2"
 download_path="$3"
 tenant_locator="$4"
 table_name="$5"
+delta_file_type="${6:-csv}"
 is_done="false"
+
+if [ "$delta_file_type" != "sql" ] && [ "$delta_file_type" != "csv" ]; then
+    echo "Invalid delta_file_type '$delta_file_type'. Must be 'sql' or 'csv'."
+    exit 1
+fi
 
 # Validate download path
 if [ ! -d "$download_path" ]; then
@@ -47,7 +53,8 @@ while [ "$is_done" != "true" ]; do
     --data "{
         \"transformationTable\": \"$table_name\",
         \"tenantLocator\": \"$tenant_locator\",
-        \"lastFile\" : \"$last_downloaded_file\"
+        \"lastFile\" : \"$last_downloaded_file\",
+        \"deltaFileType\": \"$delta_file_type\"
     }")
 
     # Check if .deltaFiles exists and contains at least one item

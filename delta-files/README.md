@@ -31,7 +31,7 @@ Before using the script, ensure you have the following:
 ## **Usage**
 
 ```
-./delta-file-downloader.sh <pat> <api_url> <download_path> <tenant_locator> <table_name>
+./delta-file-downloader.sh <pat> <api_url> <download_path> <tenant_locator> <table_name> [delta_file_type]
 ```
 
 ### **Parameters**
@@ -40,12 +40,13 @@ Before using the script, ensure you have the following:
 2. `api_url`: Base URL of the API endpoint  
 3. `download_path`: Local directory to save downloaded files  
 4. `tenant_locator`: Tenant identifier for the API request  
-5. `table_name`: Name of the transformation table
+5. `table_name`: Name of the transformation table  
+6. `delta_file_type`: *(Optional)* File type to download — `sql` or `csv`. Defaults to `csv`.
 
 ### **Example**
 
 ```
-./delta-file-downloader.sh my_access_token https://api.example.com /home/user/downloads tenant_abc customers_table
+./delta-file-downloader.sh my_access_token https://api.example.com /home/user/downloads tenant_abc customers_table csv
 ```
 
 ## **Script Workflow**
