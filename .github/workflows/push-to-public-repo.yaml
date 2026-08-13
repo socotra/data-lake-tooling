@@ -1,0 +1,37 @@
+name: push-to-public-repo
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install git-filter-repo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-filter-repo
+
+      - name: Push to public repo as generic user
+        env:
+          TOKEN: ${{ secrets._TOKEN }}
+        run: |
+          git clone --mirror \
+            "https://x-access-token:${TOKEN}@github.com/socotra/data-lake-tooling-internal.git" \
+            repo.git
+
+          cd repo.git
+
+          git filter-repo --force --commit-callback '
+            commit.author_name = b"socotrajenkins"
+            commit.author_email = b"socotrajenkins@socotra.com"
+            commit.committer_name = b"socotrajenkins"
+            commit.committer_email = b"socotrajenkins@socotra.com"
+          '
+
+          git push --mirror \
+            "https://x-access-token:${TOKEN}@github.com/socotra/data-lake-tooling.git"
