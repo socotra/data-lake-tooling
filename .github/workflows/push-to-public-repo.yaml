@@ -18,7 +18,7 @@ jobs:
 
       - name: Push to public repo as generic user
         env:
-          TOKEN: ${{ secrets._TOKEN }}
+          TOKEN: ${{ secrets.TOKEN }}
         run: |
           git clone --mirror \
             "https://x-access-token:${TOKEN}@github.com/socotra/data-lake-tooling-internal.git" \
